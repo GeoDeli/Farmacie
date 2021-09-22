@@ -168,7 +168,7 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
 
         jLabel5.setText("Comenzi anuale");
 
-        jLabel6.setText("Comenzi Lunare");
+        jLabel6.setText("Comenzi Medicamente");
 
         jLabel7.setText("Analgezice");
 
@@ -210,11 +210,6 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
                         .addComponent(ComboLuna, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addGap(64, 64, 64))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(LabelAnalgezice)
@@ -242,7 +237,13 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(65, 65, 65)
                                 .addComponent(jScrollPane2)
-                                .addContainerGap())))))
+                                .addContainerGap())))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6)
+                        .addGap(20, 20, 20))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,9 +265,9 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(LabelMedie))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -477,17 +478,35 @@ IncarcareLuni();
         }
         
         ArrayList<String> rez=new ArrayList();
+        int c1,c2,c3,c4,c5;
+        c1=c2=c3=c4=c5=0;
+        
         for(String cod:med)
-        {
-            String q="select Medicamente.Nume, Categorie.Nume from Medicamente, Categorie where medicamente.Cod_Cat=categorie.Cod_Cat and medicamente.Cod_Med=\""+cod+"\"";
+        {   //cauta in BD informatii despre medicament dupa cod
+            String q="select Medicamente.Nume, Categorie.Nume, Categorie.Cod_Cat from Medicamente, Categorie where medicamente.Cod_Cat=categorie.Cod_Cat and medicamente.Cod_Med=\""+cod+"\"";
             Statement s=con.createStatement();  
             ResultSet rs = s.executeQuery(q); 
-            while(rs.next())
+            
+            while(rs.next())    //preia medicamentul si numele categoriei
             {
+                String cat=rs.getString("Categorie.Cod_Cat");
                 rez.add(rs.getString("Medicamente.Nume")+" "+ rs.getString("Categorie.Nume"));
+                switch(cat)
+                {
+                    case "1": c1++; break;
+                     case "2": c2++; break;
+                      case "3": c3++; break;
+                       case "4": c4++; break;
+                        case "5": c5++; break;
+                }
             }
         }
-        
+        //afiseaza rezultatul
+        LabelAnalgezice.setText(String.valueOf(c1));
+        LabelAnabolizante.setText(String.valueOf(c2));
+        labelVitamine.setText(String.valueOf(c3));
+        LabelAntidepresive.setText(String.valueOf(c4));
+        LabelAntiinflamatorii.setText(String.valueOf(c5));
         afiseaza(rez,jList1); 
 
      } catch (SQLException ex) {
