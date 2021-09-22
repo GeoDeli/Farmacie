@@ -168,7 +168,7 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
 
         jLabel5.setText("Comenzi anuale");
 
-        jLabel6.setText("Comenzi Medicamente");
+        jLabel6.setText("Medicamente comandate");
 
         jLabel7.setText("Analgezice");
 
@@ -236,8 +236,7 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
                                 .addGap(64, 64, 64))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(65, 65, 65)
-                                .addComponent(jScrollPane2)
-                                .addContainerGap())))
+                                .addComponent(jScrollPane2))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jLabel5)
@@ -405,7 +404,7 @@ IncarcareLuni();
 
     private void RBIasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBIasiActionPerformed
                 jPanel1.setVisible(false);
-IncarcareLuni();
+                Panou();
         try {
          // TODO add your handling code here:
          String query="Select * from `farmacie-tab` where oras='Iasi'"; //querry
@@ -427,7 +426,7 @@ IncarcareLuni();
     //cand s-a selectat o farmacie se afiseaza informatiile extra
     private void jListFarmaciiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListFarmaciiMouseClicked
         // TODO add your handling code here:
-         jPanel1.setVisible(true); 
+        Panou();
         
     }//GEN-LAST:event_jListFarmaciiMouseClicked
 
@@ -478,7 +477,8 @@ IncarcareLuni();
         }
         
         ArrayList<String> rez=new ArrayList();
-        int c1,c2,c3,c4,c5;
+        
+        int c1,c2,c3,c4,c5;  //variabile pentru contorizarea categoriilor de medicamente
         c1=c2=c3=c4=c5=0;
         
         for(String cod:med)
@@ -491,7 +491,8 @@ IncarcareLuni();
             {
                 String cat=rs.getString("Categorie.Cod_Cat");
                 rez.add(rs.getString("Medicamente.Nume")+" "+ rs.getString("Categorie.Nume"));
-                switch(cat)
+                
+                switch(cat) //contorizeaza categoriile
                 {
                     case "1": c1++; break;
                      case "2": c2++; break;
@@ -593,6 +594,25 @@ IncarcareLuni();
             ComboLuna.addItem(month);
             
         }
+        
+    }
+
+    //reseteaza toate valorile calculate pentru medicamente si comenzi
+    private void Panou() {
+       
+         jPanel1.setVisible(true); 
+        IncarcareLuni();
+        
+        ArrayList s=new ArrayList();
+        afiseaza(s,jList1);    //goleste complet lista si nu mai afiseaza nimic
+        LabelComenzi.setText("");
+        LabelSuma.setText("");
+        LabelMedie.setText("");
+        LabelAnalgezice.setText("");
+        LabelAnabolizante.setText("");
+        labelVitamine.setText("");
+        LabelAntidepresive.setText("");
+        LabelAntiinflamatorii.setText("");
         
     }
 }
