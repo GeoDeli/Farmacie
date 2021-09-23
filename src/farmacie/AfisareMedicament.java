@@ -171,12 +171,13 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
                                 .addComponent(RBIasi))
                             .addComponent(MedicamentPerOras, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jLabel2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(109, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(87, 87, 87)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,9 +200,9 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
                     .addComponent(RBCluj)
                     .addComponent(RBTimisoara)
                     .addComponent(RBIasi))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(21, 21, 21))
         );
 
         pack();
@@ -249,20 +250,18 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
     }//GEN-LAST:event_RBBucurestiActionPerformed
 
     private void RBTimisoaraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBTimisoaraActionPerformed
-        // TODO add your handling code here:
-      CautaInOras("\"Timisoara\"");
+     CautaInOras("\"Timisoara\"");
     }//GEN-LAST:event_RBTimisoaraActionPerformed
 
     private void RBClujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBClujActionPerformed
-        // TODO add your handling code here:
-        CautaInOras("\"Cluj\"");
+         CautaInOras("\"Cluj\"");
     }//GEN-LAST:event_RBClujActionPerformed
 
     private void RBIasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBIasiActionPerformed
-        // TODO add your handling code here:
-        CautaInOras("\"Iasi\"");
+         CautaInOras("\"Iasi\"");
     }//GEN-LAST:event_RBIasiActionPerformed
 
+    //functia cauta in orasul trimis ca si parametru medicamentul si cantitatile acestuia
     void CautaInOras(String oras)
     {
            String cod_med=String.valueOf(MedicamentPerOras.getSelectedIndex()+1); //preia codul medicamentului cautat
