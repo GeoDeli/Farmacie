@@ -45,9 +45,10 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
         con=DriverManager.getConnection(database,username,pass);
         
         
-        }catch(Exception e)
+        }catch(Exception ex)
         { 
-            System.out.println(e);
+                           Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
+
         }
         IncarcareLuni();
         
@@ -377,7 +378,7 @@ IncarcareLuni();
          afiseaza(farmacii,jListFarmacii);
 
      } catch (SQLException ex) {
-        
+                        Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
      }
     }//GEN-LAST:event_RBBucurestiActionPerformed
 
@@ -399,6 +400,7 @@ IncarcareLuni();
        afiseaza(farmacii,jListFarmacii);
 
      } catch (SQLException ex) {
+                         Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
      }
     }//GEN-LAST:event_RBClujActionPerformed
 
@@ -443,6 +445,7 @@ IncarcareLuni();
          afiseaza(farmacii,jListFarmacii);
 
      } catch (SQLException ex) {
+                         Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
      }
     }//GEN-LAST:event_RBIasiActionPerformed
 
