@@ -16,7 +16,7 @@ public class Farmacie {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        AfisareOrasFarmacii a=new AfisareOrasFarmacii();
+        SelectareOptiune a=new SelectareOptiune();
         a.setVisible(true);
     }
     
