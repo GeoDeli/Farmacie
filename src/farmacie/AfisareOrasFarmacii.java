@@ -497,10 +497,8 @@ resultSet.close();
            //  System.out.println(suma);
          }
          LabelComenzi.setText(String.valueOf(count)); //afiseaza numarul de comenzi
-         LabelSuma.setText(String.valueOf(suma));//afiseaza suma totala incasata in luna curenta
-      
-          DecimalFormat df = new DecimalFormat(".##");
-          
+         LabelSuma.setText(String.valueOf(suma));//afiseaza suma totala incasata in luna curenta  
+          DecimalFormat df = new DecimalFormat(".##"); //folosit la formatare 
          LabelMedie.setText(String.valueOf(df.format(suma/count))); //afiseaza media pe luna curenta
          
          
