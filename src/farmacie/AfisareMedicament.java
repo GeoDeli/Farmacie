@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
@@ -37,6 +38,7 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
         String pass="";
         con=DriverManager.getConnection(database,username,pass);
         
+        //afiseaza medicamentele in listele din interfata
         String query="select * from Medicamente";
          Statement statement=con.createStatement();  
          ResultSet resultSet = statement.executeQuery(query); 
@@ -49,6 +51,8 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
         MedicamentPerOras.setModel(model1);
           AutoCompleteDecorator.decorate(SelecteMedicament);
           AutoCompleteDecorator.decorate(MedicamentPerOras);
+          resultSet.close();
+            statement.close();
         }catch(Exception e)
         { 
             System.out.println(e);
@@ -222,11 +226,11 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
 
          //cauta in stoc medicamentul cu codul curent
               String q="Select * from Stoc where Cod_Med=\""+cod_med+"\"";
-              Statement st=con.createStatement();
-              ResultSet rs=st.executeQuery(q);
-              while(rs.next())
+              Statement statement=con.createStatement();
+              ResultSet resultSet=statement.executeQuery(q);
+              while(resultSet.next())
               {//preia informatiile despre farmacie
-                  String q2="Select * from `farmacie-tab` where Cod_F=\""+rs.getString("Cod_F")+"\"";
+                  String q2="Select * from `farmacie-tab` where Cod_F=\""+resultSet.getString("Cod_F")+"\"";
                   Statement s=con.createStatement();
                   ResultSet rs2=s.executeQuery(q2);
                   while(rs2.next())
@@ -235,10 +239,13 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
                       String oras=rs2.getString("Oras");
                       farmacii.add(nume+" "+oras);
                   }
+                  rs2.close();
+                  s.close();
               }
          
          afiseaza(farmacii,MedicamentInStoc);
-
+resultSet.close();
+            statement.close();
      } catch (SQLException ex) {
                          Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
      }
@@ -273,8 +280,8 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
               Statement st=con.createStatement();
               ResultSet rs=st.executeQuery(q);
               while(rs.next())
-              {
-                  String query="Select * from `farmacie-tab` where oras="+oras+" and Cod_F=\""+rs.getString("Cod_F")+"\""; //querry
+              {//preia doar farmaciile din orasul curent 
+                  String query="Select * from `farmacie-tab` where oras="+oras+" and Cod_F=\""+rs.getString("Cod_F")+"\""; 
                   Statement statement=con.createStatement();  
                   ResultSet resultSet = statement.executeQuery(query); 
    
@@ -284,7 +291,11 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
              String bucati=rs.getString("Cantitate");
               farmacii.add(nume+" "+bucati+" bucati");     
          }
+          resultSet.close();
+          statement.close();
               }
+            st.close();
+            rs.close();
             
         afiseaza(farmacii,MedInOras);
 
@@ -298,8 +309,8 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
             Lista.removeAll();
 	DefaultListModel model=new DefaultListModel();
 	
-        for(String s:linii)
-            model.addElement(s);
+       //pentru fiecare elemennt din lista se adauga un element in 
+            linii.forEach(x->model.addElement(linii.get(linii.indexOf(x))));
             Lista.setModel(model);
 	
         }

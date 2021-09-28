@@ -61,11 +61,8 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
 	{
             Lista.removeAll();
 	DefaultListModel model=new DefaultListModel();
-	//pentru fiecare elemennt din lista se adauga un element in 
-         Consumer<String> CreareModel = (String s) -> {
-            model.addElement(s);
-         };
-         linii.forEach(CreareModel);
+        //creaza modelul ce contine toate elementele din lista
+	 linii.forEach(x->model.addElement(linii.get(linii.indexOf(x))));
             Lista.setModel(model);
 	
         }
@@ -401,6 +398,8 @@ IncarcareLuni();
               farmacii.add(item);     
          }
        afiseaza(farmacii,jListFarmacii);
+       resultSet.close();
+            statement.close();
 
      } catch (SQLException ex) {
                          Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
@@ -425,6 +424,8 @@ IncarcareLuni();
               farmacii.add(item);     
          }
          afiseaza(farmacii,jListFarmacii);
+         resultSet.close();
+            statement.close();
 } catch (SQLException ex) {
                 Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -445,8 +446,10 @@ IncarcareLuni();
              String item=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
               farmacii.add(item);     
          }
+         
          afiseaza(farmacii,jListFarmacii);
-
+resultSet.close();
+            statement.close();
      } catch (SQLException ex) {
                          Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
      }
@@ -539,7 +542,8 @@ IncarcareLuni();
         LabelAntidepresive.setText(String.valueOf(c4));
         LabelAntiinflamatorii.setText(String.valueOf(c5));
         afiseaza(rez,jList1); 
-
+resultSet.close();
+            statement.close();
      } catch (SQLException ex) {
                 Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
             }
