@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultListModel;
 import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -497,7 +498,10 @@ resultSet.close();
          }
          LabelComenzi.setText(String.valueOf(count)); //afiseaza numarul de comenzi
          LabelSuma.setText(String.valueOf(suma));//afiseaza suma totala incasata in luna curenta
-         LabelMedie.setText(String.valueOf(suma/count)); //afiseaza media pe luna curenta
+      
+          DecimalFormat df = new DecimalFormat(".##");
+          
+         LabelMedie.setText(String.valueOf(df.format(suma/count))); //afiseaza media pe luna curenta
          
          
          //preia info despre medicamente din fiecare comanda
