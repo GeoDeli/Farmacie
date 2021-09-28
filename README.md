@@ -5,7 +5,8 @@ Prima interfata contine posibilitatea de a selecta ce informatii dorim sa vedem:
 
 Diagrama contine schema tabelelelor, legaturile dintre acestea si campurile.
 
-#Explicatie Diagrama#
+#Explicatie Diagrama# 
+
  ~Tabela farmacie este tabela principala a proiectului si are o relatie de compozitie cu tabela Stoc si Comanda prin intermediul cheii primiare data de Cod_F.
 	
  ~Tabela Comanda are ca si cheie primara ID_Comanda, ce retine numarul unic al fiecarei comenzi. Legatura cu tabela Farmacie se realizeaza prin cheia strina Cod_F.
