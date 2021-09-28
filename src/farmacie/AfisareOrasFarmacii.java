@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -55,14 +56,16 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
         TopVanzari();
     }
 
-    
+    //afiseaza informatiile primite in jListul primit ca si parametru
      void afiseaza(ArrayList<String> linii, JList Lista)
 	{
             Lista.removeAll();
 	DefaultListModel model=new DefaultListModel();
-	
-        for(String s:linii)
+	//pentru fiecare elemennt din lista se adauga un element in 
+         Consumer<String> CreareModel = (String s) -> {
             model.addElement(s);
+         };
+         linii.forEach(CreareModel);
             Lista.setModel(model);
 	
         }
@@ -494,15 +497,15 @@ IncarcareLuni();
        {
            String mc=resultSet.getString("Med_Cant");    //preia toate medicamentele comandate din comanda curenta
            String[] pereche=mc.split(",");          //separa medicamentele in perechi COD-Cantitate
-           for(String p:pereche)                    //stocheaza toate perechile intr-un Array
-               a.add(p);
+            Consumer<String> StocheazaPerechile = (String p) -> { a.add(p);};                //stocheaza toate perechile intr-un Array
+              
        }
-        for(String pereche: a)      //preia doar codul medicamentului
-        {
+        Consumer<String> CodMed = (String pereche) -> {      //preia doar codul medicamentului     
             String[] cod=pereche.split(" ");
             med.add(cod[0]);
-        }
-        
+        };
+        a.forEach(CodMed);
+    
         ArrayList<String> rez=new ArrayList();
         
         int c1,c2,c3,c4,c5;  //variabile pentru contorizarea categoriilor de medicamente
