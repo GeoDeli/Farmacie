@@ -33,6 +33,7 @@ public class SelectareOptiune extends javax.swing.JFrame {
 
         BtnFarmacii = new javax.swing.JButton();
         BtnMedicamente = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,27 +52,37 @@ public class SelectareOptiune extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("Afisare");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(47, 47, 47))
             .addGroup(layout.createSequentialGroup()
-                .addGap(141, 141, 141)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BtnMedicamente)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(BtnFarmacii)))
-                .addContainerGap(164, Short.MAX_VALUE))
+                    .addComponent(BtnFarmacii))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {BtnFarmacii, BtnMedicamente});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(62, 62, 62)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel1)
+                .addGap(27, 27, 27)
                 .addComponent(BtnFarmacii)
-                .addGap(57, 57, 57)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(BtnMedicamente)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
@@ -127,5 +138,6 @@ public class SelectareOptiune extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnFarmacii;
     private javax.swing.JButton BtnMedicamente;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
