@@ -1,6 +1,13 @@
 package farmacie;
 
 import Classes.Farmacie;
+import Classes.Medicament;
+import Classes.Stoc;
+import Conectare.Conectare;
+import Interfete.ComandaImp;
+import Interfete.FarmacieImp;
+import Interfete.MedicamentImp;
+import Interfete.StocImp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -27,39 +34,40 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  */
 public class AfisareMedicament extends javax.swing.JFrame {
  Connection con;
-    
-    public AfisareMedicament() {
+    MedicamentImp mimp;
+    StocImp simp;
+    FarmacieImp fimp;
+    public AfisareMedicament() throws Exception {
         initComponents();
+        mimp=new MedicamentImp();
+         fimp=new FarmacieImp();
+        mimp=new MedicamentImp();
+        simp=new StocImp();
+        con=Conectare.getConnection();
       setDefaultCloseOperation(AfisareMedicament.DISPOSE_ON_CLOSE);
     DefaultComboBoxModel  model=new DefaultComboBoxModel();
 DefaultComboBoxModel  model1=new DefaultComboBoxModel();
-        try{        //realizeaza conexiunea conexiunea la baza de date
-        String database="jdbc:mysql://localhost:3306/farmacie";
-        String username="root";
-        String pass="";
-        con=DriverManager.getConnection(database,username,pass);
+       
         
         //afiseaza medicamentele in listele din interfata
-        String query="select * from Medicamente";
-         Statement statement=con.createStatement();  
-         ResultSet resultSet = statement.executeQuery(query); 
-        while(resultSet.next())
-        {
-            model.addElement(resultSet.getString("Nume"));
-             model1.addElement(resultSet.getString("Nume"));
-        }
+        
+        ArrayList<Medicament> list=mimp.getList();
+         //incarca numele medicamentelor in modele pentru a le lega de autocomplete 
+         Consumer<Medicament> getNume = (Medicament med) -> {       
+                   model.addElement(med.getNume());
+              model1.addElement(med.getNume());
+        };
+        
+        list.forEach(getNume);
+        
         SelecteMedicament.setModel(model);
         MedicamentPerOras.setModel(model1);
           AutoCompleteDecorator.decorate(SelecteMedicament);
           AutoCompleteDecorator.decorate(MedicamentPerOras);
-          resultSet.close();
-            statement.close();
-        }catch(Exception e)
-        { 
-            System.out.println(e);
+         
         } 
       
-    }
+    
 
    
     @SuppressWarnings("unchecked")
@@ -93,7 +101,6 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
                 SelecteMedicamentPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                SelecteMedicamentPopupMenuWillBecomeVisible(evt);
             }
         });
 
@@ -248,43 +255,22 @@ DefaultComboBoxModel  model1=new DefaultComboBoxModel();
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void SelecteMedicamentPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_SelecteMedicamentPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_SelecteMedicamentPopupMenuWillBecomeVisible
-
     private void SelecteMedicamentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_SelecteMedicamentPopupMenuWillBecomeInvisible
          //afiseaza farmaciile care au in stoc medicamentul selectat
-        try {
-        
+      
             String cod_med=String.valueOf(SelecteMedicament.getSelectedIndex()+1); //preia codul medicamentului cautat
-             ArrayList farmacii=new ArrayList(); //unde se stocheaza rezultatul
+            ArrayList locatieFarmacii=new ArrayList();
+             ArrayList<Stoc> farmacii=simp.listaStocuriMedicament(cod_med); //unde se stocheaza rezultatul
 
-         //cauta in stoc medicamentul cu codul curent
-              String q="Select * from Stoc where Cod_Med=\""+cod_med+"\"";
-              Statement statement=con.createStatement();
-              ResultSet resultSet=statement.executeQuery(q);
-              while(resultSet.next())
-              {//preia informatiile despre farmacie
-                  String q2="Select * from `farmacie-tab` where Cod_F=\""+resultSet.getString("Cod_F")+"\"";
-                  Statement s=con.createStatement();
-                  ResultSet rs2=s.executeQuery(q2);
-                  while(rs2.next())
-                  {//stocheaza informatiile ce vor fi afisate utilizatorului
-                      String nume=rs2.getString("Nume");
-                      String oras=rs2.getString("Oras");
-                      farmacii.add(nume+" "+oras);
-                  }
-                  rs2.close();
-                  s.close();
-              }
-         
-         afiseaza(farmacii,MedicamentInStoc);
-resultSet.close();
-            statement.close();
-     } catch (SQLException ex) {
-                         Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-     }
+                  //cauta in stoc medicamentul cu codul curent    
+             Consumer<Stoc> getFarmacii= (Stoc s)->{
+            Farmacie f=fimp.getFarmacie(s.getCod_f());
+              if(!locatieFarmacii.contains(f.getNume()+" "+f.getOras()))
+                locatieFarmacii.add(f.getNume()+" "+f.getOras());
+        };
+             farmacii.forEach(getFarmacii);
+         afiseaza(locatieFarmacii,MedicamentInStoc);
+
     }//GEN-LAST:event_SelecteMedicamentPopupMenuWillBecomeInvisible
  
         //afiseaza cantitatile de medicament din orasul Bucuresti
@@ -322,36 +308,18 @@ resultSet.close();
            String cod_med=String.valueOf(MedicamentPerOras.getSelectedIndex()+1); //preia codul medicamentului cautat
              ArrayList farmacii=new ArrayList(); //unde se stocheaza rezultatul
              
-        
-        
-        try {
-             //cauta in stoc medicamentul cu codul curent
-              String q="Select * from Stoc where Cod_Med=\""+cod_med+"\"";
-              Statement st=con.createStatement();
-              ResultSet rs=st.executeQuery(q);
-              while(rs.next())
-              {//preia doar farmaciile din orasul curent 
-                  String query="Select * from `farmacie-tab` where oras="+oras+" and Cod_F=\""+rs.getString("Cod_F")+"\""; 
-                  Statement statement=con.createStatement();  
-                  ResultSet resultSet = statement.executeQuery(query); 
-   
-         while(resultSet.next())
-         {
-             String nume=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
-             String bucati=rs.getString("Cantitate");
-              farmacii.add(nume+" "+bucati+" bucati");     
-         }
-          resultSet.close();
-          statement.close();
-              }
-            st.close();
-            rs.close();
+            ArrayList<Stoc> stocuri=simp.listaStocuriMedicament(cod_med);
             
+            Consumer<Stoc> preiaCodF=(Stoc s)->{
+                Farmacie f2=fimp.getFarmacie(s.getCod_f());
+                Farmacie f=fimp.getFarmacieNume(f2.getNume(),oras);
+                if(f.getNume()!=null)
+                farmacii.add(f.getNume()+" "+s.getCantitate()+" bucati");
+            };
+             stocuri.forEach(preiaCodF);
         afiseaza(farmacii,MedInOras);
 
-     } catch (SQLException ex) {
-                        Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-     }
+     
     }
     
     void afiseaza(ArrayList<String> linii, JList Lista)
@@ -392,7 +360,11 @@ resultSet.close();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AfisareMedicament().setVisible(true);
+                try { 
+                    new AfisareMedicament().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(AfisareMedicament.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

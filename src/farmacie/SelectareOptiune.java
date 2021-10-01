@@ -104,8 +104,14 @@ public class SelectareOptiune extends javax.swing.JFrame {
 
     private void BtnMedicamenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnMedicamenteActionPerformed
         // TODO add your handling code here:
-        AfisareMedicament a=new AfisareMedicament();
-        a.setVisible(true);
+        AfisareMedicament a;
+        try {
+            a = new AfisareMedicament();
+             a.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(SelectareOptiune.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }//GEN-LAST:event_BtnMedicamenteActionPerformed
 
     /**

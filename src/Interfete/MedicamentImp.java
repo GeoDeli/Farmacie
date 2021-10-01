@@ -9,8 +9,10 @@ import Conectare.Conectare;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -41,6 +43,32 @@ public class MedicamentImp implements MedicamentInt{
             Logger.getLogger(CategorieImp.class.getName()).log(Level.SEVERE, null, ex);
         }
             return m;
+    }
+    
+     public ArrayList<Medicament> getList() {
+       ArrayList<Medicament> list = new ArrayList<Medicament>();
+        
+            
+        try {
+            Connection con = Conectare.getConnection();
+            String sql = "SELECT * FROM Medicamente ";
+            Statement ps = con.prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery(sql);
+            
+            while(resultSet.next()){
+                Medicament m = new Medicament();
+                m.setNume(resultSet.getString("Nume"));
+                m.setCod_Med(resultSet.getString("Cod_Med"));
+                m.setCod_Cat(resultSet.getString("Cod_Cat"));
+                list.add(m);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Eroare la preluarea datelor");
+        }
+        return list;
+  
     }
     
 }

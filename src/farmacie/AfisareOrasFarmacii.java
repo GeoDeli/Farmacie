@@ -606,7 +606,6 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
           
           ArrayList <Comanda> listaComenzi=cimp.getComenziFarmacie(farmace,oras); //preia comenzile de la farmacie ce ne intereseaza
           
-         
          //preia info despre medicamente din fiecare comanda
           Consumer<Comanda> verify = (Comanda cbd) -> {      
                 String mc=cbd.getMed_cant();    //preia toate medicamentele comandate din comanda curenta

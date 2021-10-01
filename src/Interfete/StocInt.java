@@ -4,14 +4,15 @@
  */
 package Interfete;
 
-import Classes.Medicament;
+import Classes.Stoc;
 import java.util.ArrayList;
 
 /**
  *
  * @author delim
  */
-public interface MedicamentInt {
-    public Medicament getMedByID(String cod);
-     public ArrayList<Medicament> getList();
+public interface StocInt {
+    public ArrayList<Stoc> listaStocuriMedicament(String Cod_M);
+   
+   
 }
