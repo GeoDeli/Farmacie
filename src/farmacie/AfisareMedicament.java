@@ -1,5 +1,6 @@
 package farmacie;
 
+import Classes.Farmacie;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -320,6 +321,8 @@ resultSet.close();
     {
            String cod_med=String.valueOf(MedicamentPerOras.getSelectedIndex()+1); //preia codul medicamentului cautat
              ArrayList farmacii=new ArrayList(); //unde se stocheaza rezultatul
+             
+        
         
         try {
              //cauta in stoc medicamentul cu codul curent

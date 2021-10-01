@@ -11,7 +11,7 @@ import java.sql.*;
  * @author delim
  */
 public class Conectare {
-    static Connection con;
+  static Connection con;
   
    static  String database="jdbc:mysql://localhost:3306/Farmacie";
     static    String username="root";
@@ -24,6 +24,4 @@ public class Conectare {
         }
             return con;
         }
-            
-    
 }

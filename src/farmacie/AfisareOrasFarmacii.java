@@ -4,7 +4,11 @@
  */
 package farmacie;
 
-
+import Conectare.Conectare;
+import Interfete.FarmacieImp;
+import Classes.*;
+import Interfete.ComandaImp;
+import Interfete.MedicamentImp;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,29 +34,21 @@ import javax.swing.JList;
  */
 public class AfisareOrasFarmacii extends javax.swing.JFrame {
         Connection con;
-       
-     
+       FarmacieImp fimp;
+       ComandaImp cimp;
+       MedicamentImp mimp;
+     String oras;
     /**
      * Creates new form NewJFrame
      */
-    public AfisareOrasFarmacii() {
+    public AfisareOrasFarmacii() throws Exception {
         initComponents();
          setDefaultCloseOperation(AfisareMedicament.DISPOSE_ON_CLOSE);
-        jListFarmacii.removeAll();//elibereaza toate elementele din lista
-        jPanel1.setVisible(false);  //ascunde panoul cu informatii
-       
-        try{        //realizeaza conexiunea conexiunea la baza de date
-        String database="jdbc:mysql://localhost:3306/farmacie";
-        String username="root";
-        String pass="";
-        con=DriverManager.getConnection(database,username,pass);
+        fimp=new FarmacieImp();
+        mimp=new MedicamentImp();
+        cimp=new ComandaImp();
+        con=Conectare.getConnection();
         
-        
-        }catch(Exception ex)
-        { 
-                           Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
         IncarcareLuni();
         
         TopVanzari();
@@ -384,97 +380,23 @@ public class AfisareOrasFarmacii extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RBBucurestiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBBucurestiActionPerformed
-                jPanel1.setVisible(false);
-IncarcareLuni();
-        try {
-         // TODO add your handling code here:
-         String query="Select * from `farmacie-tab` where oras='Bucuresti'"; //querry
-         Statement statement=con.createStatement();  
-         ResultSet resultSet = statement.executeQuery(query); 
-         ArrayList farmacii=new ArrayList(); //unde se stocheaza valorile
-         while(resultSet.next())
-         {
-             String item=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
-              farmacii.add(item);     
-         }
-         afiseaza(farmacii,jListFarmacii);
-
-     } catch (SQLException ex) {
-                        Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-     }
+             cautaInOras("Bucuresti");
+             oras="Bucuresti";
     }//GEN-LAST:event_RBBucurestiActionPerformed
 
     private void RBClujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBClujActionPerformed
-        
-        jPanel1.setVisible(false);
-        IncarcareLuni();
-        try {
-      
-         String query="Select * from `farmacie-tab` where oras='Cluj'"; //querry
-         Statement statement=con.createStatement();  
-         ResultSet resultSet = statement.executeQuery(query); 
-         ArrayList farmacii=new ArrayList(); //unde se stocheaza valorile
-         while(resultSet.next())
-         {
-             String item=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
-              farmacii.add(item);     
-         }
-       afiseaza(farmacii,jListFarmacii);
-       resultSet.close();
-            statement.close();
-
-     } catch (SQLException ex) {
-                         Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-     }
+             cautaInOras("Cluj");
+             oras="Cluj";
     }//GEN-LAST:event_RBClujActionPerformed
 
     private void RBTimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBTimiActionPerformed
-                jPanel1.setVisible(false);
-IncarcareLuni();
-      
-         // TODO add your handling code here:
-         String query="Select * from `farmacie-tab` where oras='Timisoara'"; //querry
-         Statement statement;  
-            try {
-                statement = con.createStatement();
-            
-         ResultSet resultSet = statement.executeQuery(query); 
-         ArrayList farmacii=new ArrayList(); //unde se stocheaza valorile
-         while(resultSet.next())
-         {
-             String item=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
-              farmacii.add(item);     
-         }
-         afiseaza(farmacii,jListFarmacii);
-         resultSet.close();
-            statement.close();
-} catch (SQLException ex) {
-                Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-            }
-     
+             cautaInOras("Timisoara");
+            oras="Timisoara";
     }//GEN-LAST:event_RBTimiActionPerformed
 
     private void RBIasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBIasiActionPerformed
-                jPanel1.setVisible(false);
-                Panou();
-        try {
-         // TODO add your handling code here:
-         String query="Select * from `farmacie-tab` where oras='Iasi'"; //querry
-         Statement statement=con.createStatement();  
-         ResultSet resultSet = statement.executeQuery(query); 
-         ArrayList farmacii=new ArrayList(); //unde se stocheaza valorile
-         while(resultSet.next())
-         {
-             String item=resultSet.getString("nume"); //preia doar campul ce ne intereseaza
-              farmacii.add(item);     
-         }
-         
-         afiseaza(farmacii,jListFarmacii);
-resultSet.close();
-            statement.close();
-     } catch (SQLException ex) {
-                         Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-     }
+              cautaInOras("Iasi");
+              oras="Iasi";
     }//GEN-LAST:event_RBIasiActionPerformed
 
     
@@ -490,87 +412,27 @@ resultSet.close();
  
         int luna= ComboLuna.getSelectedIndex(); //preia luna
         luna++;
-          String farmace=jListFarmacii.getSelectedValue(); //preia numele farmaciei
-        
-          try {
-              //cauta numele informatii in BD folosind legatura dintre tabela Farmacie si Comanda
-         String query="select comanda.ID_Comanda,comanda.pret from comanda,`farmacie-tab` where comanda.Cod_F=`farmacie-tab`.Cod_F and `farmacie-tab`.`Nume`=\""+farmace+"\" and Month(comanda.Data_Livrare)="+luna; //querry
-         Statement statement=con.createStatement();  
-         ResultSet resultSet = statement.executeQuery(query); 
-       
-         int count=0;           //numara comenzile din luna selectata
+          int count=0;           //numara comenzile din luna selectata
          double suma=0;
-         while(resultSet.next())
-         {
-            count++;    
-             suma+=Double.parseDouble(resultSet.getString("pret"));
-            // System.out.println("Comanda curenta:"+resultSet.getString("ID_Comanda")+" suma: "+resultSet.getString("pret"));
-           //  System.out.println(suma);
-         }
+          String farmace=jListFarmacii.getSelectedValue(); //preia numele farmaciei
+     
+        ArrayList <Comanda> listaComenzi=cimp.getComenziFarmacie(farmace,oras); //preia comenzile de la farmacie ce ne intereseaza
+        
+                //preia numarul de comenzi si suma totala a lor
+              for(Comanda cbd: listaComenzi) {      
+                 if(cbd.getLivrare().getMonth()==ComboLuna.getSelectedIndex())
+                 {
+                      count++;    
+                        suma+=cbd.getPret();
+                 }                          
+        }
+            
          LabelComenzi.setText(String.valueOf(count)); //afiseaza numarul de comenzi
          LabelSuma.setText(String.valueOf(suma));//afiseaza suma totala incasata in luna curenta  
           DecimalFormat df = new DecimalFormat(".##"); //folosit la formatare 
          LabelMedie.setText(String.valueOf(df.format(suma/count))); //afiseaza media pe luna curenta
-         
-         
-         //preia info despre medicamente din fiecare comanda
-        query="select Med_Cant from comanda,`farmacie-tab` where comanda.Cod_F=`farmacie-tab`.Cod_F and `farmacie-tab`.`Nume`=\""+farmace+"\"";
-        ArrayList<String> a=new ArrayList();  //array folosit pentru a prelua cantiatea
-        ArrayList<String> med=new ArrayList();
-         statement=con.createStatement();  
-          resultSet = statement.executeQuery(query); 
-       while(resultSet.next())  
-       {
-           String mc=resultSet.getString("Med_Cant");    //preia toate medicamentele comandate din comanda curenta
-           String[] pereche=mc.split(",");          //separa medicamentele in perechi COD-Cantitate
-          for(String p:pereche)                    //stocheaza toate perechile intr-un Array
-               a.add(p);              //stocheaza toate perechile intr-un Array
-              
-       }
-        Consumer<String> CodMed = (String pereche) -> {      //preia doar codul medicamentului     
-            String[] cod=pereche.split(" ");
-            med.add(cod[0]);
-        };
-        a.forEach(CodMed);
-    
-        ArrayList<String> rez=new ArrayList();
-        
-        int c1,c2,c3,c4,c5;  //variabile pentru contorizarea categoriilor de medicamente
-        c1=c2=c3=c4=c5=0;
-        
-        for(String cod:med)
-        {   //cauta in BD informatii despre medicament dupa cod
-            String q="select Medicamente.Nume, Categorie.Nume, Categorie.Cod_Cat from Medicamente, Categorie where medicamente.Cod_Cat=categorie.Cod_Cat and medicamente.Cod_Med=\""+cod+"\"";
-            Statement s=con.createStatement();  
-            ResultSet rs = s.executeQuery(q); 
-            
-            while(rs.next())    //preia medicamentul si numele categoriei
-            {
-                String cat=rs.getString("Categorie.Cod_Cat");
-                rez.add(rs.getString("Medicamente.Nume")+" "+ rs.getString("Categorie.Nume"));
-                
-                switch(cat) //contorizeaza categoriile
-                {
-                    case "1": c1++; break;
-                     case "2": c2++; break;
-                      case "3": c3++; break;
-                       case "4": c4++; break;
-                        case "5": c5++; break;
-                }
-            }
-        }
-        //afiseaza rezultatul
-        LabelAnalgezice.setText(String.valueOf(c1));
-        LabelAnabolizante.setText(String.valueOf(c2));
-        labelVitamine.setText(String.valueOf(c3));
-        LabelAntidepresive.setText(String.valueOf(c4));
-        LabelAntiinflamatorii.setText(String.valueOf(c5));
-        afiseaza(rez,jList1); 
-resultSet.close();
-            statement.close();
-     } catch (SQLException ex) {
-                Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
-            }
+       
+   
           
                      
     }//GEN-LAST:event_ComboLunaPopupMenuWillBecomeInvisible
@@ -606,7 +468,11 @@ resultSet.close();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AfisareOrasFarmacii().setVisible(true);
+                try {
+                    new AfisareOrasFarmacii().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -675,6 +541,8 @@ resultSet.close();
         LabelAntidepresive.setText("");
         LabelAntiinflamatorii.setText("");
         
+         AfiseazaInformatiiCantitati();
+        
     }
             //afiseaza farmacia cu cele mai multe vanzari
     private void TopVanzari() {
@@ -713,6 +581,81 @@ resultSet.close();
                 Logger.getLogger(AfisareOrasFarmacii.class.getName()).log(Level.SEVERE, null, ex);
             }
             
+    }
+
+    private void cautaInOras(String oras) {
+          jPanel1.setVisible(false);
+                 ArrayList farmacii=new ArrayList(); //unde se stocheaza valorile
+                IncarcareLuni();
+            
+            ArrayList<Farmacie> lista=fimp.cautaInOras(oras);
+            Consumer<Farmacie> getNume = (Farmacie cbd) -> {      
+                farmacii.add(cbd.getNume());
+        };
+               lista.forEach(getNume);
+         afiseaza(farmacii,jListFarmacii);
+    }
+
+    private void AfiseazaInformatiiCantitati() {
+         Farmacie f;
+         String farmace=jListFarmacii.getSelectedValue(); //preia numele farmaciei
+        
+        ArrayList perecheCod=new ArrayList();
+         ArrayList<String> med=new ArrayList<String>();
+          ArrayList<String> rez=new ArrayList();
+          
+          ArrayList <Comanda> listaComenzi=cimp.getComenziFarmacie(farmace,oras); //preia comenzile de la farmacie ce ne intereseaza
+          
+         
+         //preia info despre medicamente din fiecare comanda
+          Consumer<Comanda> verify = (Comanda cbd) -> {      
+                String mc=cbd.getMed_cant();    //preia toate medicamentele comandate din comanda curenta
+           String[] pereche=mc.split(", ");          //separa medicamentele in perechi COD-Cantitate
+                 for(String p:pereche)
+                      perecheCod.add(p);            //stocheaza codul 
+        };
+         
+          listaComenzi.forEach(verify);
+          
+        Consumer<String> CodMed = (String pereche) -> {      //preia doar codul medicamentului     
+            String[] cod=pereche.split(" ");
+          //  if(!cod[0].isBlank())
+              med.add(cod[0]);
+        };
+        perecheCod.forEach(CodMed);
+    
+        int c1,c2,c3,c4,c5;  //variabile pentru contorizarea categoriilor de medicamente
+        c1=c2=c3=c4=c5=0;
+        
+        for(String cod:med)
+        {   //cauta in BD informatii despre medicament dupa cod
+            
+            if(!cod.equals(""))
+            {
+                Medicament m = mimp.getMedByID(cod);   
+                String nume=m.getNume();
+                if(!rez.contains(m.getNume()+" ->"+m.getCod_Cat()))
+                 rez.add(m.getNume()+" ->"+m.getCod_Cat());
+       
+                switch(m.getCod_Cat()) //contorizeaza categoriile
+                {
+                    case "Analgezice": c1++; break;
+                     case "Anabolizante": c2++; break;
+                      case "Vitamine": c3++; break;
+                       case "Antidepresive": c4++; break;
+                        case "Antiinflamatorii": c5++; break;
+                }
+            } 
+        }
+        
+        //afiseaza rezultatul
+        LabelAnalgezice.setText(String.valueOf(c1));
+        LabelAnabolizante.setText(String.valueOf(c2));
+        labelVitamine.setText(String.valueOf(c3));
+        LabelAntidepresive.setText(String.valueOf(c4));
+        LabelAntiinflamatorii.setText(String.valueOf(c5));
+        afiseaza(rez,jList1); 
+
     }
     
      

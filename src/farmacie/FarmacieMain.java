@@ -9,7 +9,7 @@ package farmacie;
  *
  * @author delim
  */
-public class Farmacie {
+public class FarmacieMain {
 
     /**
      * @param args the command line arguments

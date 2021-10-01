@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Clase;
+package Interfete;
 
 /**
  *
  * @author delim
  */
-public class Comanda {
-    
+public interface CategorieInt {
+  public String getCategorieName(String cod);
 }
